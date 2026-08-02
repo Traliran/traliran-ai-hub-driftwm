@@ -1,26 +1,11 @@
 # 💎 Traliran AI Hub
 
+
+This is an official fork of Traliran/traliran-ai-hub styled after driftwm; it retains the functionality of the original Traliran AI Hub, but its appearance has been completely overhauled—see for yourself.
+
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 
 A lightweight, serverless, and privacy-first AI web client & playground with a built-in code execution sandbox, a dedicated AI-powered Integrated Development Environment (IDE), and multi-model parallel benchmarking. Connect directly to Groq, Gemini, OpenAI, OpenRouter, DeepSeek, Qwen, GLM, Claude, and local backends (Ollama / Llama.cpp) straight from your browser.
-
-<img width="1813" height="957" alt="изображение" src="https://github.com/user-attachments/assets/87805692-7415-4572-b783-4fd258bbabf9" />
-
-<img width="1809" height="958" alt="изображение" src="https://github.com/user-attachments/assets/d2d6c3c9-cb5a-4371-9a2f-22a0fb9506c9" />
-
-<img width="1818" height="940" alt="изображение" src="https://github.com/user-attachments/assets/6560a1ab-4095-4072-8869-3e8478405840" />
-
-<img width="413" height="457" alt="изображение" src="https://github.com/user-attachments/assets/85c80da8-ecda-4a47-ba76-3afced93e963" />
-
-<img width="1825" height="952" alt="изображение" src="https://github.com/user-attachments/assets/41d3ffd2-51b4-4bf4-a6e4-283919442bab" />
-
-<img width="1815" height="947" alt="изображение" src="https://github.com/user-attachments/assets/c823d773-2106-4a45-af79-a545802ad75e" />
-
-<img width="1780" height="941" alt="изображение" src="https://github.com/user-attachments/assets/b1d30427-c26b-4c9c-8aaf-88f460bcdd9e" />
-
-<img width="1820" height="944" alt="изображение" src="https://github.com/user-attachments/assets/71f20574-06a6-48d1-9c19-583329fcc6a4" />
-
-<img width="1820" height="940" alt="изображение" src="https://github.com/user-attachments/assets/8ac7e713-b684-4d01-85a9-adcd8ef127d6" />
 
 
 
