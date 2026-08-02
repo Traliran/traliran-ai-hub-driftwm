@@ -512,8 +512,7 @@ function selectSession(id) {
     currentSessionId = id;
     loadActiveSessionChat();
     renderSessionsList();
-    chatsPanel.classList.add('-translate-x-full');
-    chatsOverlay.classList.add('hidden');
+    if (window.CANVAS) CANVAS.closeModule('chats');
     updateSummarizeButtonVisibility();
 }
 
@@ -692,8 +691,8 @@ tabPreview.addEventListener('click', () => {
 });
 
 runCodeBtn.addEventListener('click', () => tabPreview.click());
-toggleSandboxBtn.addEventListener('click', () => sandboxColumn.classList.toggle('hidden'));
-closeSandboxBtn.addEventListener('click', () => sandboxColumn.classList.add('hidden'));
+toggleSandboxBtn.addEventListener('click', () => window.CANVAS && CANVAS.toggleModule('sandbox'));
+closeSandboxBtn.addEventListener('click', () => window.CANVAS && CANVAS.closeModule('sandbox'));
 
 const expandHeaderBtn = document.getElementById('expandHeaderBtn');
 const collapsedButtons = document.getElementById('collapsedButtons');
@@ -718,7 +717,7 @@ if (expandHeaderBtn && collapsedButtons) {
 
 window.sendToSandbox = function(encodedCode) {
     sandboxCode.value = decodeURIComponent(encodedCode);
-    sandboxColumn.classList.remove('hidden');
+    if (window.CANVAS) CANVAS.openModule('sandbox');
     tabPreview.click();
 };
 
@@ -1612,45 +1611,24 @@ refreshModelsBtn.addEventListener('click', fetchActiveModels);
 newChatBtn.addEventListener('click', createNewSession);
 
 toggleChatsBtn.addEventListener('click', () => {
-    if (window.innerWidth >= 768) {
-        chatsPanel.classList.toggle('md:hidden');
-    } else {
-        chatsPanel.classList.toggle('-translate-x-full');
-        chatsOverlay.classList.toggle('hidden');
-    }
+    if (window.CANVAS) CANVAS.toggleModule('chats');
 });
 chatsOverlay.addEventListener('click', () => {
-    chatsPanel.classList.add('-translate-x-full');
-    chatsOverlay.classList.add('hidden');
+    if (window.CANVAS) CANVAS.closeModule('chats');
 });
 
 toggleSidebarBtn.addEventListener('click', () => {
-    if (window.innerWidth >= 1024) {
-        sidebar.classList.toggle('lg:hidden');
-    } else {
-        sidebar.classList.remove('translate-x-full');
-        sidebarOverlay.classList.remove('hidden');
-    }
+    if (window.CANVAS) CANVAS.toggleModule('config');
 });
 closeSidebarBtn.addEventListener('click', closeSidebarUniversal);
 sidebarOverlay.addEventListener('click', closeSidebarUniversal);
 
 function openSidebarUniversal() {
-    if (window.innerWidth >= 1024) {
-        sidebar.classList.remove('lg:hidden');
-    } else {
-        sidebar.classList.remove('translate-x-full');
-        sidebarOverlay.classList.remove('hidden');
-    }
+    if (window.CANVAS) CANVAS.openModule('config');
 }
 
 function closeSidebarUniversal() {
-    if (window.innerWidth >= 1024) {
-        sidebar.classList.add('lg:hidden');
-    } else {
-        sidebar.classList.add('translate-x-full');
-        sidebarOverlay.classList.add('hidden');
-    }
+    if (window.CANVAS) CANVAS.closeModule('config');
 }
 
 attachmentInput.addEventListener('change', async (e) => {
@@ -1731,10 +1709,12 @@ closeHelpModal.addEventListener('click', () => { helpModal.classList.add('hidden
 closeHelpModalBtn.addEventListener('click', () => { helpModal.classList.add('hidden'); });
 
 openNotesBtn.addEventListener('click', () => {
-    notesPage.classList.remove('hidden');
     loadNotes();
+    if (window.CANVAS) CANVAS.openModule('notes');
 });
-closeNotesPage.addEventListener('click', () => notesPage.classList.add('hidden'));
+closeNotesPage.addEventListener('click', () => {
+    if (window.CANVAS) CANVAS.closeModule('notes');
+});
 newNoteBtn.addEventListener('click', createNewNote);
 noteTitle.addEventListener('input', updateNoteContent);
 noteContent.addEventListener('input', () => {
