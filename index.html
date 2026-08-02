@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traliran AI Hub</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.105/pdf.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gray-950 text-gray-100 font-sans h-screen flex flex-col overflow-hidden">
+
+    <header class="bg-gray-900 border-b border-gray-800 p-4 sticky top-0 z-20 shadow-md">
+        <div class="max-w-[1600px] mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center justify-between w-full md:w-auto gap-4">
+                <div class="flex items-center gap-2">
+                    <span class="text-2xl">💎</span>
+                    <h1 class="text-xl font-black text-emerald-400 tracking-wide bg-clip-text">Traliran AI Hub</h1>
+                </div>
+                <div class="flex gap-2">
+                    <button id="toggleChats" class="bg-gray-800 hover:bg-gray-700 text-white text-sm px-3 py-1.5 rounded transition cursor-pointer" title="Chat History">
+                        💬 <span class="hidden sm:inline">Chats</span>
+                    </button>
+                    <button id="toggleSidebar" class="bg-gray-800 hover:bg-gray-700 text-white text-sm px-3 py-1.5 rounded transition cursor-pointer" title="API Settings">
+                        ⚙️ <span class="hidden sm:inline">Settings</span>
+                    </button>
+                    <button id="summarizeChatBtn" class="hidden bg-gray-800 hover:bg-gray-700 text-white text-sm px-3 py-1.5 rounded transition cursor-pointer" title="Summarize conversation to Personal AI">
+                        📝 <span class="hidden sm:inline">Summarize</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="flex flex-wrap items-center gap-3 w-full md:w-auto justify-end">
+                <button id="openStoreBtn" class="flex bg-amber-600/20 hover:bg-amber-600/30 text-amber-300 border border-amber-500/30 px-3.5 py-1.5 rounded-lg text-sm transition cursor-pointer font-medium flex items-center gap-1">
+                    <span>🏪</span> Assistant Store
+                </button>
+
+                <button id="loginBtn" class="bg-gray-800 hover:bg-gray-700 text-gray-300 p-2 rounded-lg transition cursor-pointer text-sm font-medium" title="Login / Cloud Sync">
+                    🔑 <span id="loginBtnText" class="hidden sm:inline">Login</span>
+                </button>
+
+                <button id="expandHeaderBtn" class="bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-lg transition cursor-pointer text-sm font-medium" title="More buttons">
+                    ☰ <span class="hidden sm:inline">More</span>
+                </button>
+
+                <div id="collapsedButtons" class="hidden absolute top-full right-0 mt-2 bg-gray-900 border border-gray-800 rounded-xl p-2 flex-col gap-1 shadow-2xl z-50 min-w-[200px]">
+                    <a href="https://dev.to/traliran" target="_blank" id="blogBtn" class="flex bg-sky-600/20 hover:bg-sky-600/30 text-sky-300 border border-sky-500/30 px-3.5 py-2 rounded-lg text-sm transition cursor-pointer font-medium items-center gap-1.5 w-full">
+                        <span>📝</span> Blog
+                    </a>
+<a href="https://github.com/traliran/traliran-ai-hub/" target="_blank" rel="noopener noreferrer" id="blogBtn" class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg border border-sky-500/30 bg-sky-600/20 text-sm font-medium text-sky-300 transition hover:bg-sky-600/30 cursor-pointer">
+    <svg class="h-4 w-4 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.579.688.481C19.138 20.161 22 14.418 22 12c0-5.523-4.477-10-10-10z" />
+    </svg>
+    <span>GitHub</span>
+</a>
+
+                    <button id="openGroupChatBtn" class="flex bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 px-3.5 py-2 rounded-lg text-sm transition cursor-pointer font-medium items-center gap-1 w-full">
+                        <span>👥</span> AI Group Debate
+                    </button>
+                    <button id="openHelpBtn" class="flex bg-gray-800 hover:bg-gray-700 text-gray-300 px-3.5 py-2 rounded-lg text-sm transition cursor-pointer font-medium items-center gap-1 w-full">
+                        ❓ Help
+                    </button>
+                    <button id="openNotesBtn" class="flex bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 px-3.5 py-2 rounded-lg text-sm transition cursor-pointer font-medium items-center gap-1 w-full">
+                        <span>📝</span> Notes
+                    </button>
+                    <a href="playground.html" class="flex bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 px-3.5 py-2 rounded-lg text-sm transition cursor-pointer font-medium items-center gap-1 w-full">
+                        <span>📚</span> RAG Playground
+                    </a>
+                    <a href="ide.html" class="flex bg-violet-600/20 hover:bg-violet-600/30 text-violet-300 border border-violet-500/30 px-3.5 py-2 rounded-lg text-sm transition cursor-pointer font-medium items-center gap-1 w-full">
+                        <span>⚡</span> AI IDE
+                    </a>
+                    <button id="toggleSandboxBtn" class="flex bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 px-3.5 py-2 rounded-lg text-sm transition cursor-pointer font-medium items-center gap-1 w-full">
+                        <span>💻</span> Sandbox
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-[1600px] w-full mx-auto flex relative overflow-hidden">
+        
+        <section id="chatsPanel" class="absolute inset-y-0 left-0 w-72 bg-gray-900 border-r border-gray-800 p-4 flex flex-col gap-4 overflow-y-auto chat-scroll transition-transform duration-300 -translate-x-full md:translate-x-0 md:static md:w-64 lg:w-72 z-30">
+            <div class="flex justify-between items-center border-b border-gray-800 pb-2">
+                <h2 class="font-bold text-gray-300 text-sm uppercase tracking-wider">Chat History</h2>
+                <button id="newChatBtn" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold py-1 px-2.5 rounded transition cursor-pointer">
+                    + New
+                </button>
+            </div>
+            <div id="chatsList" class="flex-1 flex flex-col gap-2 overflow-y-auto chat-scroll">
+            </div>
+        </section>
+
+        <div id="chatsOverlay" class="hidden absolute inset-0 bg-black/60 z-25 md:hidden"></div>
+
+        <section id="sidebar" class="absolute inset-y-0 right-0 w-80 bg-gray-900 border-l lg:border-l-0 lg:border-r border-gray-800 p-4 flex flex-col gap-4 overflow-y-auto chat-scroll transition-transform duration-300 translate-x-full lg:translate-x-0 lg:static lg:w-80 z-30">
+            <div class="border-b border-gray-800 pb-3 space-y-3">
+                <div class="flex justify-between items-center">
+                    <h2 class="font-semibold text-emerald-400 text-sm">Cloud Sync</h2>
+                    <span id="syncStatusIndicator" class="text-[10px] text-gray-500">Not connected</span>
+                </div>
+                <div class="space-y-2">
+                    <input type="text" id="dbUrl" placeholder="DB URL (Firebase/Supabase/PocketBase)..."
+                        class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-emerald-500 transition font-mono">
+                    <input type="text" id="dbKey" placeholder="API Key / Project ID..."
+                        class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-emerald-500 transition font-mono">
+                    <div class="flex gap-2">
+                        <button id="dbConnectBtn" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold py-1.5 rounded-lg transition cursor-pointer">
+                            Connect
+                        </button>
+                        <button id="dbDisconnectBtn" class="hidden flex-1 bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold py-1.5 rounded-lg transition cursor-pointer">
+                            Disconnect
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-b border-gray-800 pb-2 flex justify-between items-center">
+                <div>
+                    <h2 class="font-semibold text-emerald-400 text-base">API Configuration</h2>
+                    <p class="text-xs text-gray-400 mt-1">Switch providers on the fly</p>
+                </div>
+                <button id="closeSidebar" class="text-gray-400 hover:text-white font-bold p-1">✕</button>
+            </div>
+
+            <div class="flex flex-col gap-3">
+                <div>
+                    <label id="step-provider" class="block text-xs font-semibold text-gray-400 mb-1">AI Provider</label>
+                    <select id="apiProvider" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 transition">
+                        <option value="groq">Groq Cloud</option>
+                        <option value="google">Google Gemini (OpenAI API)</option>
+                        <option value="openrouter">OpenRouter</option>
+                        <option value="openai">OpenAI</option>
+                        <option value="deepseek">DeepSeek</option>
+                        <option value="qwen">Qwen</option>
+                        <option value="glm">GLM</option>
+                        <option value="claude">Claude</option>
+                        <option value="ollama">Ollama (Local)</option>
+                        <option value="llamacpp">Llama.cpp (Local)</option>
+                    </select>
+                </div>
+
+                <div id="apiKeyContainer">
+                    <label id="step-key" class="block text-xs font-semibold text-gray-400 mb-1">API Key (token)</label>
+                    <input type="password" id="apiKeyValue" placeholder="Enter your API key..." 
+                        class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 transition font-mono">
+                </div>
+
+                <div id="endpointContainer" class="hidden">
+                    <label class="block text-xs font-semibold text-gray-400 mb-1">Base Endpoint URL</label>
+                    <input type="text" id="apiEndpoint" placeholder="http://localhost:11434/v1" 
+                        class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 transition font-mono">
+                </div>
+
+                <button id="refreshModelsBtn" class="w-full bg-gray-800 hover:bg-gray-700 text-gray-200 font-semibold py-2 rounded-lg text-xs transition cursor-pointer flex items-center justify-center gap-1">
+                    🔄 Refresh Model List
+                </button>
+
+                <div>
+                    <label id="step-model" class="block text-xs font-semibold text-gray-400 mb-1">AI Model (Active)</label>
+                    <select id="botModel" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 transition mb-2">
+                        <option value="">(Enter API key to load models)</option>
+                    </select>
+                    <button id="openMultiModelBtn" class="w-full bg-indigo-600/30 border border-indigo-500/40 hover:bg-indigo-600/50 text-indigo-300 font-medium py-1.5 rounded-lg text-xs transition flex items-center justify-center gap-1">
+                        ⚙️ Multi-Model Setup / Compare
+                    </button>
+                    <div id="multiModelBadge" class="hidden mt-1.5 p-1.5 bg-indigo-950/40 border border-indigo-900 rounded text-[11px] text-indigo-300"></div>
+                </div>
+
+                <div class="border-t border-gray-800 pt-3 mt-1 space-y-3">
+                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Assistant Profile</h3>
+                    
+                    <div>
+                        <label class="block text-xs font-medium text-gray-400 mb-1">Assistant Name</label>
+                        <input type="text" id="botName" placeholder="e.g., Assistant" 
+                            class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-emerald-500">
+                    </div>
+
+                    <div>
+                        <label id="step-prompt" class="block text-xs font-medium text-gray-400 mb-1">System Prompt (Instructions)</label>
+                        <textarea id="botPrompt" rows="3" placeholder="Set communication style, system constraints, role..." 
+                            class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 resize-none"></textarea>
+                    </div>
+                </div>
+
+                <div class="border-t border-gray-800 pt-3 mt-1 space-y-3">
+                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Personal AI</h3>
+                    <p class="text-[10px] text-gray-500">Info about you — injected into all AI prompts hub-wide</p>
+                    <div>
+                        <textarea id="personalInfo" rows="4" 
+                            placeholder="Write about yourself: your role, expertise, preferences, goals... This will be used as context across all AI interactions."
+                            class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 resize-none"></textarea>
+                    </div>
+                </div>
+
+                <div class="border-t border-gray-800 pt-3 mt-1 space-y-3">
+                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Appearance</h3>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-400 mb-1">Theme Preset</label>
+                        <select id="themeSelector" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 transition">
+                            <option value="default">Default Dark</option>
+                            <option value="cyberpunk">Cyberpunk</option>
+                            <option value="matrix">Matrix</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="border-t border-gray-800 pt-3 space-y-3">
+                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Parameters</h3>
+                    <div>
+                        <div class="flex justify-between text-xs text-gray-400 mb-1">
+                            <span>Temperature:</span>
+                            <span id="tempValue" class="font-mono text-emerald-400">0.7</span>
+                        </div>
+                        <input type="range" id="botTemperature" min="0" max="2" step="0.1" value="0.7" 
+                            class="w-full h-1 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-emerald-500">
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-xs text-gray-400 mb-1">
+                            <span>Top P:</span>
+                            <span id="topPValue" class="font-mono text-emerald-400">1.0</span>
+                        </div>
+                        <input type="range" id="botTopP" min="0" max="1" step="0.05" value="1.0" 
+                            class="w-full h-1 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-emerald-500">
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-xs text-gray-400 mb-1">
+                            <span>Max Tokens:</span>
+                            <span id="tokensValue" class="font-mono text-emerald-400">2048</span>
+                        </div>
+                        <input type="range" id="botMaxTokens" min="256" max="16384" step="256" value="2048" 
+                            class="w-full h-1 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-emerald-500">
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-800 pt-3 flex flex-col gap-2">
+                <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">JSON Import / Export</h3>
+                <div class="grid grid-cols-2 gap-2">
+                    <button id="exportJson" class="bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-medium py-2 px-3 rounded-lg transition cursor-pointer">
+                        Export
+                    </button>
+                    <label class="bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-medium py-2 px-3 rounded-lg transition text-center cursor-pointer block">
+                        Import
+                        <input type="file" id="importJson" accept=".json" class="hidden">
+                    </label>
+                </div>
+            </div>
+
+            <div id="statusIndicator" class="mt-auto p-3 bg-gray-950/80 border border-gray-800 rounded-lg text-xs text-gray-400">
+                <span class="font-medium text-gray-300 block mb-1">Active Profile:</span>
+                <span id="activeStatusText">Default AI</span>
+            </div>
+        </section>
+
+        <div id="sidebarOverlay" class="hidden absolute inset-0 bg-black/60 z-25 lg:hidden"></div>
+
+        <section class="flex-1 flex flex-col md:flex-row h-full bg-gray-950 overflow-hidden w-full relative">
+            
+            <div id="chatColumn" class="flex-1 flex flex-col h-full overflow-hidden">
+                <div id="chatWindow" class="flex-1 p-4 overflow-y-auto space-y-4 chat-scroll">
+                    <div id="welcomeMessage" class="bg-gray-900 border border-gray-800 p-6 rounded-xl max-w-2xl mx-auto text-center mt-8 space-y-4">
+                        <span class="text-4xl">🚀</span>
+                        <h3 class="font-bold text-xl text-emerald-400">Welcome to Traliran AI Hub!</h3>
+                        <p class="text-sm text-gray-300 leading-relaxed">
+                            This is an advanced sandbox environment for managing workflows with neural networks. It seamlessly connects to **Groq, Google Gemini, OpenRouter, OpenAI, DeepSeek, Qwen, GLM, Claude** services, as well as local backend nodes running **Ollama/Llama.cpp**.
+                        </p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left text-xs text-gray-400 pt-2">
+                            <div class="bg-gray-950 p-3 rounded-lg border border-gray-800">
+                                <span class="font-semibold text-emerald-300 block mb-1">1. Key Setup</span>
+                                Enter your API key on the right and select a provider. The model list will update automatically!
+                            </div>
+                            <div class="bg-gray-950 p-3 rounded-lg border border-gray-800">
+                                <span class="font-semibold text-emerald-300 block mb-1">2. History & Sessions</span>
+                                All chats are saved locally. You can switch between them using the left panel history log.
+                            </div>
+                            <div class="bg-gray-950 p-3 rounded-lg border border-gray-800">
+                                <span class="font-semibold text-emerald-300 block mb-1">3. Code & Sandbox</span>
+                                When the AI generates structural code blocks, you can run and view them live inside the "Sandbox" tab component.
+                            </div>
+                            <div class="bg-gray-950 p-3 rounded-lg border border-gray-800">
+                                <span class="font-semibold text-emerald-300 block mb-1">4. Assistant Store</span>
+                                Click the top right button to open the store where you can test integrated free features or access custom presets!
+                            </div>
+                        </div>
+                        <button id="startIntroBtn" class="mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-5 rounded-lg text-sm transition cursor-pointer">
+                            Launch Interface Guide 🎓
+                </button>
+            </div>
+        </div>
+
+                <div class="p-4 bg-gray-900/40 border-t border-gray-900 flex flex-col gap-2">
+                    <div id="fileIndicator" class="max-w-4xl w-full mx-auto hidden items-center justify-between bg-gray-800/80 border border-gray-700 px-3 py-1.5 rounded-lg text-xs">
+                        <div class="flex items-center gap-2 text-emerald-400 truncate">
+                            <span>📎</span>
+                            <span id="fileNameDisplay" class="truncate font-mono">file.txt</span>
+                        </div>
+                        <button id="removeFileBtn" class="text-rose-400 hover:text-rose-300 cursor-pointer px-1 font-bold">✕</button>
+                    </div>
+                    <div id="usageIndicator" class="max-w-4xl w-full mx-auto hidden items-center justify-between bg-gray-900/80 border border-gray-800 px-3 py-2 rounded-lg text-xs text-gray-400">
+                        <span id="usageInfo">Tokens: 0</span>
+                        <span id="streamingStatus"></span>
+                    </div>
+
+                    <div class="max-w-4xl w-full mx-auto flex flex-col sm:flex-row gap-2 items-end">
+                        <label class="bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-200 p-2.5 rounded-lg transition cursor-pointer flex items-center justify-center shrink-0 w-[42px] h-[42px]" title="Attach text, image, video or PDF">
+                            <span>📎</span>
+                            <input type="file" id="attachmentInput" class="hidden" accept=".txt,.js,.html,.css,.json,.md,.py,.ts,.cpp,.java,.c,.pdf,image/*,video/*">
+                        </label>
+
+                        <textarea id="userInput" rows="1" placeholder="Ask a question..." 
+                            class="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500 resize-none max-h-32 chat-scroll min-h-[42px]"></textarea>
+                        
+                        <div class="flex gap-2 w-full sm:w-auto">
+                            <button id="sendBtn" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-4 sm:px-5 py-2.5 rounded-lg text-sm transition flex items-center justify-center cursor-pointer h-[42px] shrink-0">
+                                <span class="sm:inline hidden">Send</span>
+                                <span class="inline sm:hidden">➤</span>
+                            </button>
+                            <button id="stopBtn" class="hidden w-full sm:w-auto bg-rose-600 hover:bg-rose-700 text-white font-medium px-4 sm:px-5 py-2.5 rounded-lg text-sm transition flex items-center justify-center cursor-pointer h-[42px] shrink-0">
+                                <span class="sm:inline hidden">Stop</span>
+                                <span class="inline sm:hidden">⏹</span>
+                            </button>
+                        </div>
+                    </div>
+        </div>
+    </div>
+
+            <div id="sandboxColumn" class="hidden w-full md:w-[45%] bg-gray-900 border-t md:border-t-0 md:border-l border-gray-800 flex flex-col h-full overflow-hidden absolute md:static inset-0 z-40">
+                <div class="p-3 bg-gray-950 border-b border-gray-800 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <span>💻</span>
+                        <h3 class="font-bold text-sm text-emerald-400">Sandbox Interpreter</h3>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button id="runCodeBtn" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-2.5 py-1 rounded transition cursor-pointer">
+                            Run ▶
+                        </button>
+                        <button id="closeSandboxBtn" class="text-gray-400 hover:text-white font-bold p-1 text-sm">✕</button>
+                    </div>
+                </div>
+                
+                <div class="flex border-b border-gray-800 text-xs bg-gray-900">
+                    <button id="tabEditor" class="flex-1 py-2 text-center border-b-2 border-emerald-500 font-semibold text-gray-200">Editor</button>
+                    <button id="tabPreview" class="flex-1 py-2 text-center border-b-2 border-transparent font-semibold text-gray-400">Preview</button>
+                </div>
+
+                <div class="flex-1 flex flex-col relative overflow-hidden">
+                    <div id="sandboxEditorContainer" class="flex-1 flex flex-col h-full">
+                        <textarea id="sandboxCode" class="flex-1 w-full bg-gray-950 text-gray-100 p-3 font-mono text-xs focus:outline-none resize-none overflow-y-auto chat-scroll" placeholder="Paste HTML/JS/CSS code here..."></textarea>
+                    </div>
+                    <div id="sandboxPreviewContainer" class="hidden flex-1 bg-white h-full">
+                        <iframe id="sandboxIframe" class="w-full h-full border-none bg-white"></iframe>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- Модалка конфигуратора мульти-моделей -->
+    <div id="multiModelModal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+        <div class="bg-gray-900 border border-gray-800 rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl relative flex flex-col max-h-[85vh]">
+            <button id="closeMultiModelModal" class="absolute top-4 right-4 text-gray-400 hover:text-white font-bold text-lg">✕</button>
+            <div>
+                <h2 class="text-xl font-bold text-indigo-400">🤖 Multi-Model Setup</h2>
+                <p class="text-xs text-gray-400 mt-0.5">Select multiple models to poll them simultaneously.</p>
+            </div>
+            <div id="multiModelList" class="flex-1 overflow-y-auto chat-scroll space-y-2 border border-gray-800 p-3 rounded-xl bg-gray-950">
+                <!-- Заполняется динамически -->
+            </div>
+            <div class="flex justify-end gap-2 pt-2 border-t border-gray-800">
+                <button id="clearMultiModels" class="bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs font-semibold py-2 px-4 rounded-lg transition">Reset</button>
+                <button id="saveMultiModels" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold py-2 px-4 rounded-lg transition">Apply Selection</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модалка Группового Чат Дебатов -->
+    <div id="groupChatModal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+        <div class="bg-gray-900 border border-gray-800 rounded-2xl max-w-xl w-full p-6 space-y-4 shadow-2xl relative">
+            <button id="closeGroupChatModal" class="absolute top-4 right-4 text-gray-400 hover:text-white font-bold text-lg">✕</button>
+            <div>
+                <h2 class="text-xl font-black text-indigo-400">👥 AI Group Debate Panel</h2>
+                <p class="text-xs text-gray-400 mt-1">Submit your idea. Three specialized AI agents will review it from multiple perspectives (Optimist, Critic, Technologist).</p>
+            </div>
+            <div class="space-y-2">
+                <label class="block text-xs font-semibold text-gray-400">Your Idea / Thesis:</label>
+                <textarea id="groupIdeaInput" rows="4" placeholder="e.g., Launching a decentralized P2P marketplace template for local products inside a Linux containers container system..." class="w-full bg-gray-950 border border-gray-800 rounded-lg p-3 text-sm focus:outline-none focus:border-indigo-500 resize-none chat-scroll text-gray-100"></textarea>
+            </div>
+            <div class="flex justify-end">
+                <button id="startGroupDebateBtn" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2 px-5 rounded-lg text-sm transition cursor-pointer">
+                    Initiate Multi-Agent Analysis 🚀
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="storeModal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+        <div class="bg-gray-900 border border-gray-800 rounded-2xl max-w-4xl w-full p-6 space-y-6 shadow-2xl relative flex flex-col max-h-[90vh]">
+            <button id="closeStoreModal" class="absolute top-4 right-4 text-gray-400 hover:text-white font-bold text-lg cursor-pointer">✕</button>
+            
+            <div>
+                <h2 class="text-2xl font-black text-amber-400 tracking-wide">🏪 Assistant Store</h2>
+                <p class="text-xs text-gray-400 mt-1">Get built-in standard extensions or expand library with custom presets.</p>
+            </div>
+
+            <div class="flex-1 overflow-y-auto chat-scroll space-y-6 pr-2">
+                <div>
+                    <h3 class="text-sm font-bold uppercase text-gray-400 tracking-wider mb-3 border-b border-gray-800 pb-1">FREE:</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="bg-gray-950 border border-gray-800 rounded-xl p-4 flex flex-col justify-between h-36 relative overflow-hidden group">
+                            <div>
+                                <h4 class="font-bold text-emerald-400 text-sm">🔤 Polyglot Translator</h4>
+                                <p class="text-xs text-gray-400 mt-1.5 line-clamp-2">Translates incoming texts into target language systems maintaining proper cultural idioms.</p>
+                            </div>
+                            <div class="flex justify-end mt-2">
+                                <button onclick="installFreeAssistant('Translator', 'You are an advanced expert translator. Your sole purpose is to translate any text provided into high-quality, fluent English (or the language specified by user), keeping idioms and contextual tone perfectly intact. Avoid chatbot greetings.')" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-1.5 rounded-lg transition cursor-pointer">try</button>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-950 border border-gray-800 rounded-xl p-4 flex flex-col justify-between h-36 relative overflow-hidden group">
+                            <div>
+                                <h4 class="font-bold text-emerald-400 text-sm">✍️ Code & Text Editor</h4>
+                                <p class="text-xs text-gray-400 mt-1.5 line-clamp-2">Corrects syntax structural flaws, styles code, or fixes grammar blocks instantly.</p>
+                            </div>
+                            <div class="flex justify-end mt-2">
+                                <button onclick="installFreeAssistant('Editor Core', 'You are a professional editor. Analyze the user text or source code payload, fix bugs, optimize layout structures, polish grammatical issues, and return the cleaned output without conversational filler.')" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-1.5 rounded-lg transition cursor-pointer">try</button>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-950 border border-gray-800 rounded-xl p-4 flex flex-col justify-between h-36 relative overflow-hidden group">
+                            <div>
+                                <h4 class="font-bold text-emerald-400 text-sm">💡 Ideation Generator</h4>
+                                <p class="text-xs text-gray-400 mt-1.5 line-clamp-2">Brainstorms creative concepts, scripts, plot designs, and mechanics loops.</p>
+                            </div>
+                            <div class="flex justify-end mt-2">
+                                <button onclick="installFreeAssistant('Idea Spark', 'You are a creative brainstorming engine. Generate out-of-the-box ideas, architectural blueprints, script writing angles, and unique strategic concepts based on user prompts. Deliver responses using highly structured bullet points.')" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-1.5 rounded-lg transition cursor-pointer">try</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-sm font-bold uppercase text-gray-400 tracking-wider mb-3 border-b border-gray-800 pb-1">PAID:</h3>
+                    <div id="paidBotsContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="helpModal" class="hidden fixed inset-0 bg-black/75 z-50 flex items-center justify-center p-4">
+        <div class="bg-gray-900 border border-gray-800 rounded-xl max-w-xl w-full p-6 space-y-4 shadow-2xl relative">
+            <button id="closeHelpModal" class="absolute top-4 right-4 text-gray-400 hover:text-white font-bold text-lg">✕</button>
+            <h3 class="text-lg font-bold text-emerald-400 flex items-center gap-2">
+                <span>🎓</span> Help & Provider Setup
+            </h3>
+            
+            <div class="space-y-3 text-sm text-gray-300 max-h-[70vh] overflow-y-auto chat-scroll pr-2">
+                <div>
+                    <h4 class="font-bold text-emerald-300 mb-0.5">🟢 Groq Cloud</h4>
+                    <p class="text-xs text-gray-400">Requires an API key from console.groq.com. Delivers the fastest inference speed on the market.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-emerald-300 mb-0.5">🟢 Google Gemini</h4>
+                    <p class="text-xs text-gray-400">Operates via official OpenAI-compliant base route. Requires an API token from Google AI Studio.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-emerald-300 mb-0.5">🟢 OpenRouter</h4>
+                    <p class="text-xs text-gray-400">Unified entry portal accessing hundreds of variants (Claude, GPT, DeepSeek). Requires token routing from openrouter.ai.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-emerald-300 mb-0.5">🟢 OpenAI</h4>
+                    <p class="text-xs text-gray-400">Standard direct infrastructure connections to mainline GPT models. Setup authorization key at platform.openai.com.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-emerald-300 mb-0.5">🟢 DeepSeek / Qwen / GLM</h4>
+                    <p class="text-xs text-gray-400">Use compatible OpenAI-style endpoints with your API key. These providers can handle multimodal prompts and rich media-aware conversations.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-emerald-300 mb-0.5">🟢 Claude</h4>
+                    <p class="text-xs text-gray-400">Anthropic's Claude models support direct API access with an Anthropic-compatible endpoint and can be used for text and media-oriented workflows.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-emerald-300 mb-0.5">🟢 Local Ollama</h4>
+                    <p class="text-xs text-gray-400">Verify your daemon is active locally (`ollama run ...`). Standard fallback routing endpoint: `http://localhost:11434/v1`.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-emerald-300 mb-0.5">🟢 Local Llama.cpp</h4>
+                    <p class="text-xs text-gray-400">Ideal when utilizing internal standard web server packaging setups. Standard fallback mapping endpoint: `http://localhost:8080/v1`.</p>
+                </div>
+
+                <div class="bg-gray-950 p-3 rounded-lg border border-gray-800 text-xs mt-4">
+                    <span class="font-bold text-yellow-400 block mb-1">⚠️ Please note:</span>
+                    When initiating queries to local servers (Ollama / Llama.cpp), your browser runtime may block transactions due to structural browser CORS security constraints. Ensure to deploy Ollama with standard origin flag variables enabled: `OLLAMA_ORIGINS="*"`.
+                </div>
+            </div>
+
+            <div class="flex justify-end">
+                <button id="closeHelpModalBtn" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-6 rounded-lg text-sm transition cursor-pointer">
+                    Got it
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notes Page -->
+    <div id="notesPage" class="hidden fixed inset-0 bg-gray-950 text-gray-100 z-40 flex overflow-hidden">
+        <aside class="w-64 md:w-80 bg-gray-900 border-r border-gray-800 flex flex-col h-full">
+            <div class="p-4 border-b border-gray-800 flex justify-between items-center">
+                <h2 class="font-bold text-emerald-400">My Notes</h2>
+                <button id="newNoteBtn" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-1 px-2 rounded transition cursor-pointer">
+                    + New
+                </button>
+            </div>
+            <div class="p-3">
+                <input type="text" id="notesSearch" placeholder="Search notes or #tags..." class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-emerald-500 transition">
+            </div>
+            <div id="notesList" class="flex-1 overflow-y-auto chat-scroll p-2 flex flex-col gap-2">
+                <!-- Notes entries -->
+            </div>
+        </aside>
+
+        <main class="flex-1 flex flex-col h-full relative bg-gray-950">
+            <div class="p-4 border-b border-gray-800 flex justify-between items-center bg-gray-900/50">
+                <input type="text" id="noteTitle" placeholder="Note Title..." class="bg-transparent text-xl font-bold text-gray-100 focus:outline-none w-full mr-4">
+                <div class="flex gap-2">
+                    <button id="importNoteBtn" class="text-xs bg-gray-800 hover:bg-gray-700 px-3 py-1 rounded border border-gray-700 transition cursor-pointer" title="Import MD file">📥 Import</button>
+                    <button id="exportNoteBtn" class="text-xs bg-gray-800 hover:bg-gray-700 px-3 py-1 rounded border border-gray-700 transition cursor-pointer" title="Export as MD file">📤 Export</button>
+                    <input type="file" id="noteFileInput" accept=".md" class="hidden">
+                    <button id="toggleNotePreview" class="text-xs bg-gray-800 hover:bg-gray-700 px-3 py-1 rounded border border-gray-700 transition cursor-pointer">👁️ Preview</button>
+                    <button id="deleteNoteBtn" class="text-xs bg-rose-900/30 hover:bg-rose-900/50 text-rose-400 px-3 py-1 rounded border border-rose-800/50 transition cursor-pointer">🗑️ Delete</button>
+                    <button id="closeNotesPage" class="text-gray-400 hover:text-white p-1 text-xl">✕</button>
+                </div>
+            </div>
+
+            <div class="flex-1 flex overflow-hidden">
+                <textarea id="noteContent" placeholder="Start writing in Markdown... Use #tags for automatic organization." class="flex-1 bg-transparent p-6 focus:outline-none resize-none font-mono text-sm leading-relaxed chat-scroll"></textarea>
+                <div id="notePreview" class="hidden flex-1 p-6 overflow-y-auto chat-scroll md-content"></div>
+            </div>
+
+            <div id="noteTagsContainer" class="p-3 border-t border-gray-800 flex flex-wrap gap-2 bg-gray-900/30">
+                <!-- Auto-applied tags -->
+            </div>
+
+            <!-- AI Complement Button -->
+            <button id="aiComplementBtn" class="fixed bottom-8 right-8 w-14 h-14 bg-emerald-600 hover:bg-emerald-500 text-white rounded-full shadow-lg flex items-center justify-center text-2xl transition-transform active:scale-90 z-50 cursor-pointer" title="AI Complement">
+                ✨
+            </button>
+        </main>
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+        <div class="bg-gray-900 border border-gray-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl relative">
+            <button id="closeAuthModal" class="absolute top-4 right-4 text-gray-400 hover:text-white font-bold text-lg">✕</button>
+            <div>
+                <h2 class="text-xl font-bold text-emerald-400">🔑 Cloud Sync Login</h2>
+                <p class="text-xs text-gray-400 mt-1">Sign in to sync your data across devices.</p>
+            </div>
+
+            <div class="flex border-b border-gray-800">
+                <button id="authTabLogin" class="flex-1 py-2 text-sm font-bold text-emerald-400 border-b-2 border-emerald-500 transition">Login</button>
+                <button id="authTabRegister" class="flex-1 py-2 text-sm font-bold text-gray-500 border-b-2 border-transparent transition">Register</button>
+            </div>
+
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1">Database URL</label>
+                    <input type="text" id="authDbUrl" placeholder="https://your-project.firebaseio.com or project-id"
+                        class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 transition font-mono">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1">API Key (if required)</label>
+                    <input type="text" id="authDbKey" placeholder="Firebase API key / Supabase anon key"
+                        class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 transition font-mono">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1">Email</label>
+                    <input type="email" id="authEmail" placeholder="your@email.com"
+                        class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1">Password</label>
+                    <input type="password" id="authPassword" placeholder="Enter password"
+                        class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 transition">
+                </div>
+            </div>
+
+            <button id="authSubmitBtn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg text-sm transition cursor-pointer">
+                Login
+            </button>
+
+            <div id="authError" class="hidden text-xs text-rose-400 text-center"></div>
+        </div>
+    </div>
+
+    <script src="db-connector.js"></script>
+    <script src="sync-manager.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
+
