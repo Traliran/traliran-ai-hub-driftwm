@@ -1,0 +1,319 @@
+/* ============================================================
+   DriftWM Infinite Canvas — canvas + window manager styles
+   ============================================================ */
+
+/* ---------- Viewport & World ---------- */
+#viewport {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    background-color: var(--bg-main);
+    background-image:
+        radial-gradient(circle, rgba(148, 163, 184, 0.30) 1px, transparent 1.4px),
+        radial-gradient(circle, rgba(148, 163, 184, 0.11) 1px, transparent 1.4px);
+    touch-action: none;
+    cursor: default;
+}
+#viewport.space-held { cursor: grab; }
+#viewport.panning, #viewport.panning * { cursor: grabbing !important; user-select: none !important; }
+
+#canvas-world {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 1px;
+    transform-origin: 0 0;
+    will-change: transform;
+}
+#canvas-world.animating { transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
+
+/* ---------- Drift Windows ---------- */
+.drift-window {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    min-width: 240px;
+    min-height: 130px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 10px 32px rgba(0, 0, 0, 0.45);
+    overflow: hidden;
+    transition: box-shadow 0.15s ease;
+}
+.drift-window.drift-focused {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 1px var(--accent-color), 0 16px 44px rgba(0, 0, 0, 0.6);
+}
+.drift-window.drift-minimized { height: auto !important; min-height: 0; }
+.drift-window.drift-minimized .drift-content { display: none; }
+.drift-window.drift-closed { display: none; }
+
+.drift-header {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 10px;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+    border-bottom: 1px solid transparent;
+    flex-shrink: 0;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0));
+}
+.drift-window.drift-focused .drift-header { border-bottom-color: var(--accent-color); }
+.drift-header:active { cursor: grabbing; }
+
+.drift-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    opacity: 0.5;
+    flex-shrink: 0;
+    transition: all 0.2s;
+}
+.drift-window.drift-focused .drift-dot {
+    background: var(--accent-color);
+    opacity: 1;
+    box-shadow: 0 0 8px var(--accent-color);
+}
+
+.drift-title {
+    flex: 1;
+    min-width: 0;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.drift-window.drift-focused .drift-title { color: var(--text-main); }
+
+.drift-header-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 12px;
+    line-height: 1;
+    padding: 2px 6px;
+    border-radius: 5px;
+}
+.drift-header-btn:hover { background: rgba(255, 255, 255, 0.08); color: var(--text-main); }
+.drift-header-btn.drift-close:hover { background: rgba(248, 113, 113, 0.16); color: #f87171; }
+
+.drift-content {
+    flex: 1;
+    position: relative;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.drift-iframe {
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: #030712;
+}
+
+.drift-resize {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 16px;
+    height: 16px;
+    cursor: nwse-resize;
+    z-index: 5;
+}
+.drift-resize::after {
+    content: '';
+    position: absolute;
+    right: 4px;
+    bottom: 4px;
+    width: 7px;
+    height: 7px;
+    border-right: 2px solid var(--text-muted);
+    border-bottom: 2px solid var(--text-muted);
+    opacity: 0.45;
+}
+.drift-window.drift-focused .drift-resize::after { border-color: var(--accent-color); }
+
+.drift-snap-guide {
+    position: absolute;
+    background: var(--accent-color);
+    box-shadow: 0 0 10px var(--accent-color);
+    pointer-events: none;
+    z-index: 9990;
+    display: none;
+}
+
+/* ---------- Moved module sources (become window content) ---------- */
+.win-inner {
+    position: absolute !important;
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    transform: none !important;
+    translate: 0 0 !important;
+    z-index: auto !important;
+    display: flex !important;
+    flex-direction: column;
+    background: var(--bg-secondary);
+}
+.win-inner.hidden { display: none !important; }
+
+.drift-window[data-module="notes"] #aiComplementBtn { position: absolute !important; }
+
+/* ---------- Floating Dock (Floating Bar) ---------- */
+#drift-dock {
+    position: fixed;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 45;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    padding: 8px;
+    background: rgba(15, 23, 42, 0.86);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    box-shadow: 0 12px 34px rgba(0, 0, 0, 0.55);
+}
+.drift-dock-btn {
+    position: relative;
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    color: var(--text-muted);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 11px;
+    cursor: pointer;
+    transition: all 0.13s ease;
+}
+.drift-dock-btn:hover { background: rgba(255, 255, 255, 0.08); color: var(--text-main); transform: translateY(-1px); }
+.drift-dock-btn.active {
+    background: rgba(52, 211, 153, 0.16);
+    border-color: rgba(52, 211, 153, 0.45);
+    color: var(--accent-color);
+}
+.drift-dock-btn.off { opacity: 0.45; }
+.drift-dock-btn .tip {
+    position: absolute;
+    right: calc(100% + 12px);
+    top: 50%;
+    transform: translateY(-50%) translateX(4px);
+    white-space: nowrap;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: #e5e7eb;
+    background: #111827;
+    border: 1px solid var(--border-color);
+    border-radius: 7px;
+    padding: 4px 9px;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.14s ease;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+}
+.drift-dock-btn:hover .tip { opacity: 1; transform: translateY(-50%) translateX(0); }
+.drift-dock-sep { height: 1px; background: var(--border-color); margin: 3px 6px; }
+.drift-dock-add { border-color: var(--accent-color); color: var(--accent-color); }
+.drift-dock-zoom {
+    font-size: 13px;
+    font-weight: 700;
+    font-family: ui-monospace, monospace;
+    color: var(--text-muted);
+    width: 42px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+}
+.drift-dock-zoom:hover { color: var(--text-main); background: rgba(255, 255, 255, 0.06); }
+
+/* ---------- Add-module popup menu ---------- */
+#drift-add-menu {
+    position: fixed;
+    z-index: 46;
+    display: none;
+    flex-direction: column;
+    gap: 2px;
+    padding: 6px;
+    min-width: 210px;
+    background: rgba(15, 23, 42, 0.96);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.6);
+}
+#drift-add-menu .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    text-align: left;
+}
+#drift-add-menu .menu-item:hover { background: rgba(255, 255, 255, 0.08); color: var(--text-main); }
+#drift-add-menu .menu-item .mi-sub { margin-left: auto; font-size: 10px; color: var(--text-muted); opacity: 0.7; }
+
+/* ---------- Controls hint ---------- */
+#drift-hint {
+    position: fixed;
+    left: 14px;
+    bottom: 12px;
+    z-index: 44;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 12px;
+    font-size: 11px;
+    color: var(--text-muted);
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+    user-select: none;
+}
+#drift-hint kbd {
+    font-family: ui-monospace, monospace;
+    font-size: 10px;
+    color: var(--accent-color);
+    background: rgba(52, 211, 153, 0.12);
+    border: 1px solid rgba(52, 211, 153, 0.3);
+    border-radius: 4px;
+    padding: 1px 5px;
+    margin: 0 2px;
+}
