@@ -1,56 +1,70 @@
-# 💎 Traliran AI Hub
-
-
-This is an official fork of Traliran/traliran-ai-hub styled after driftwm; it retains the functionality of the original Traliran AI Hub, but its appearance has been completely overhauled—see for yourself.
+# 💎 Traliran AI Hub (driftwm)
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 
-A lightweight, serverless, and privacy-first AI web client & playground with a built-in code execution sandbox, a dedicated AI-powered Integrated Development Environment (IDE), and multi-model parallel benchmarking. Connect directly to Groq, Gemini, OpenAI, OpenRouter, DeepSeek, Qwen, GLM, Claude, and local backends (Ollama / Llama.cpp) straight from your browser.
-
-
-
-## ✨ Live Web App & Premium Store
-👉 **[Launch Traliran AI Hub on GitHub Pages](https://traliran.github.io/traliran-ai-hub/)**
-
-### 🏪 Why the Live Version Rules:
-The GitHub repository provides the complete, fully functional core UI and essential free assistant presets. However, the live hosted version features our cloud-updated **Assistant Store** linked directly with marketplace fulfillment!
-
-Inside, you can unlock exclusive, highly-optimized Premium Bots (advanced custom prompts and configurations for scriptwriting, prompt engineering, and content optimization) for just **$4 – $6**. Skip hours of tedious prompt-tuning and get production-ready results for the price of a coffee!
+A lightweight, serverless, and private web client for working with AI right in your browser. This version has been redesigned in the style of the Linux window manager driftwm, which features an infinite desktop concept. It works directly with Groq, Gemini, OpenAI, OpenRouter, DeepSeek, Qwen, GLM, Claude, and local backends (Ollama / Llama.cpp) without intermediaries.
 
 ---
 
-## 🛡️ 100% Privacy-First & Serverless
-* **Zero Middleman Servers:** This is a 100% client-side application.
-* **Direct Routing:** Your API tokens are saved strictly in your browser's `LocalStorage` and sent straight to the official AI providers. No logs, no data collection, no leaks.
-* **AGPLv3 Guaranteed:** Total freedom to audit, inspect, and host the code yourself, backed by a strong copyleft license that keeps the project forever open.
+## 🛠️ Need a custom bot or feature?
+
+Need a personal AI assistant, a special integration, or a unique feature for **Traliran AI Hub driftwm**?
+
+> 📩 **[Order a custom bot / feature](https://forms.gle/XpTQRCrpGdsbPiR48)**
+> *Fill out a short form with your requirements and budget. We’ll respond within 48 hours. **Payment in cryptocurrency only.** :3*
+
+---
+
+## ✨ Web App & Assistant Store
+👉 **[Launch Traliran AI Hub (driftwm) on GitHub Pages](https://traliran.github.io/traliran-ai-hub-driftwm/)**
+
+### Assistant Store
+
+Inside, you’ll find both built-in free tools (translator, code editor, idea generator) and exclusive **Premium bots** (advanced system prompts and configurations for screenwriters, prompt engineers, and content creators) for just **$4–$6**. Save hours on setting up prompts and get ready-made solutions for the price of a cup of coffee!
+
+---
+
+## 🛡️ 100% Privacy and Serverless
+* **No intermediary servers:** The app runs 100% on the client side, right in your browser.
+* ** Direct Routing:** Your API keys are stored exclusively in the browser’s `LocalStorage` and sent directly to the providers’ official endpoints. No logs, data collection, or leaks.
+* **AGPLv3 Guarantee:** Complete freedom to audit, inspect the code, and self-host.
 
 ---
 
 ## 🚀 Key Features
 
-*   **Multi-Provider Support:** Seamlessly switch between top cloud APIs (Groq, Gemini, OpenAI, OpenRouter, DeepSeek, Qwen, GLM, Claude) and local LLMs (Ollama, Llama.cpp).
-*   **⚡ Multi-Model Setup & Compare:** Select multiple models simultaneously. The app triggers parallel API requests and renders side-by-side comparative cards for instant benchmarking.
-*   **💡 Model Thinking Support:** Native rendering for reasoning models (like DeepSeek-R1). Structural thoughts are captured and organized into a clean, collapsible hidden dropdown block.
-*   **👥 AI Group Debate Mode:** Turn your raw ideas into fully analyzed concepts. Run a multi-agent discussion loop where specialized personas (Optimist, Critic, and Technologist) cross-examine your thesis over multiple rounds.
-*   **⚡ AI IDE - Integrated Development Environment:** A full-fledged in-browser IDE for code generation, editing, and project management, powered by your chosen AI model.
-    *   **File Explorer:** Manage multiple project files (HTML, CSS, JS, etc.).
-    *   **Code Editor:** Edit files with a monospaced code editor.
-    *   **Live Preview:** Instantly preview HTML/JS/CSS code changes in an isolated iframe.
-    *   **AI:** Utilize AI for quick actions like `Create Layout`, `Optimize / Clean`, `Explain Code`, and `Debug & Fix` based on your active file or prompt.
-    *   **Project Management:** Download your entire workspace as a `.zip` or reset it.
-*   **💻 Built-in Sandbox Interpreter:** Execute, preview, and test generated HTML/JS/CSS code snippets securely in an isolated iframe without leaving the main chat workspace.
-*   **🏪 Assistant Store:** Access a marketplace of free and premium, highly-optimized AI assistant presets and custom prompts for various tasks (e.g., Polyglot Translator, Code & Text Editor, Ideation Generator).
-*   **⚙️ Advanced Parameters Control:** Fine-tune system behaviors with on-the-fly adjustable sliders for Temperature, Top P, and Max Tokens configuration.
+* **Multi-provider support:** Quickly switch between cloud APIs (Groq, Google Gemini, OpenAI, OpenRouter, DeepSeek, Qwen, GLM, Claude) and local neural networks (Ollama, Llama.cpp).
+* **☁️ Cloud Sync:** Synchronize chats, settings, and presets across all your devices.
+* **🧠 Personal AI:** A section for entering context about yourself—automatically incorporated into all system prompts.
+* **⚡ Multi-Model Setup:** Send a query to multiple models simultaneously and view their responses side by side for quick benchmarking.
+* **👥 AI Group Debate Mode:** Test your ideas with three specialized agents (*Optimist*, *Critic*, *Technologist*) that analyze your hypothesis from different angles.
+* **📝 Built-in Notes (My Notes):** A built-in notepad for quickly jotting down thoughts, drafts, and generated responses.
+* **💻 Sandbox Interpreter:** Safe rendering and execution of generated HTML/JS/CSS code in a separate component right during the conversation.
+* **🏪 Assistant Store:** A catalog of free extensions and ready-made presets for solving specific tasks (polyglot translator, code editor, idea generator, etc.).
+* **🎨 Themes:** Support for multiple visual presets (Default Dark, Cyberpunk, Matrix).
+* **⚙️ Fine-Tuning Parameters:** Control generation “on the fly” using the Temperature, Top P, and Max Tokens sliders.
+* **📦 Import/Export:** Quickly save and load settings and profiles in JSON format.
 
 ---
 
-## ⚖️ License & Open Source Terms
+## ⚙️ Quick Start and Connecting Providers
 
-This project is licensed under the **GNU Affero General Public License v3.0 (AGPLv3)**.
+1. **Enter Key:** Select a provider in the sidebar (API Configuration) and paste your API key. The list of models will update automatically.
+2. **Local Models:**
+   * For **Ollama**, run the service with CORS requests enabled: `OLLAMA_ORIGINS=“*” ollama serve` (default endpoint: `http://localhost:11434/v1`).
+   * For **Llama.cpp**, use the built-in web server (default endpoint: `http://localhost:8080/v1`).
+
+---
+
+## ⚖️ License and Terms of Use
+
+This project is distributed under the **GNU Affero General Public License v3.0 (AGPLv3)**.
 
 ### What this means for forks and deployments:
-1.  **Keep it Open:** If you modify this software and run it on a server to make it accessible to other users over a network (as a SaaS or public website), you **MUST** make your modified source code available to the public under the same AGPLv3 license.
-2.  **Attribution:** You must retain original copyright notices, links to this repository, and clearly state any changes made to the source code.
-3.  **No Hidden Commercialization:** You cannot close the source code or hide integrated core features (like the built-in store or author credits) in your public deployments.
+1. **Open Source:** If you modify this software and run it on a server accessible to users over the network (SaaS, public websites), you **MUST** make the source code of your modifications available under the AGPLv3 license.
+2. **Attribution:** You must preserve the original copyright notices, links to this repository, and provide a list of the changes you’ve made.
+3. **Prohibition on Hidden Commercialization:** It is prohibited to close-source the code or hide built-in core features (including the store and author attribution) in public deployments.
 
-*For custom commercial licensing or private white-label partnerships without AGPLv3 restrictions, please contact the repository maintainer.*
+*To obtain a commercial license or a white-label partnership without AGPLv3 restrictions, please contact the repository owner via email at cwcom@proton.me.*
+
+Translated with DeepL.com (free version)
