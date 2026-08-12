@@ -66,7 +66,8 @@
         guideX: null,
         guideY: null,
         saveTimer: null,
-        hint: null
+        hint: null,
+        tiling: false
     };
 
     /* ---------------- Rendering ---------------- */
@@ -74,6 +75,7 @@
     function render() {
         C.world.style.transform = 'translate(' + C.camera.x + 'px, ' + C.camera.y + 'px) scale(' + C.camera.scale + ')';
         updateGrid();
+        if (C.tiling) tileWindows();
     }
 
     function updateGrid() {
@@ -156,7 +158,7 @@
         // Header drag.
         var header = el.querySelector('.drift-header');
         header.addEventListener('pointerdown', function (e) {
-            if (e.button !== 0 || C.spaceHeld) return;
+            if (e.button !== 0 || C.spaceHeld || C.tiling) return;
             if (e.target.closest('.drift-header-btn')) return;
             e.preventDefault();
             startDrag(w, e);
@@ -164,7 +166,7 @@
 
         // Resize handle.
         el.querySelector('.drift-resize').addEventListener('pointerdown', function (e) {
-            if (e.button !== 0) return;
+            if (e.button !== 0 || C.tiling) return;
             e.preventDefault();
             e.stopPropagation();
             focus(w.id);
@@ -232,6 +234,7 @@
         ensureContent(w);
         applyPos(w);
         focus(w.id);
+        if (C.tiling) tileWindows();
     }
 
     function closeWindow(id) {
@@ -247,6 +250,7 @@
             });
             if (best) focus(best.id);
         }
+        if (C.tiling) tileWindows();
         updateDock();
         saveSoon();
     }
@@ -258,6 +262,7 @@
         w.el.classList.toggle('drift-minimized', w.minimized);
         if (!w.minimized) focus(w.id);
         applyPos(w);
+        if (C.tiling) tileWindows();
         saveSoon();
     }
 
@@ -303,7 +308,7 @@
         C.camera.scale = Math.round(scale * 100) / 100;
         C.camera.x = vw / 2 - (w.x + w.w / 2) * C.camera.scale;
         C.camera.y = vh / 2 - (w.y + w.h / 2) * C.camera.scale;
-        if (animate !== false) {
+        if (animate !== false && !C.tiling) {
             C.world.classList.add('animating');
             clearTimeout(C.animTimer);
             C.animTimer = setTimeout(function () { C.world.classList.remove('animating'); }, 520);
@@ -587,6 +592,10 @@
             var rect2 = C.viewport.getBoundingClientRect();
             zoomAt(rect2.width / 2, rect2.height / 2, 1 / 1.12);
         }
+        if ((e.ctrlKey || e.metaKey) && e.altKey && (e.key === 't' || e.key === 'T')) {
+            e.preventDefault();
+            setTiling(!C.tiling);
+        }
     }
 
     function onKeyUp(e) {
@@ -734,7 +743,8 @@
         h.innerHTML =
             '<span><kbd>Space</kbd>+Drag / <kbd>MMB</kbd> Pan</span>' +
             '<span><kbd>Ctrl</kbd>+<kbd>Wheel</kbd> Zoom</span>' +
-            '<span><kbd>Shift</kbd>+Drag Snap</span>';
+            '<span><kbd>Shift</kbd>+Drag Snap</span>' +
+            '<span><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>T</kbd> Tiling</span>';
         document.body.appendChild(h);
     }
 
@@ -750,6 +760,7 @@
             v: 1,
             camera: C.camera,
             active: C.activeId,
+            tiling: C.tiling,
             windows: C.windows.map(function (w) {
                 return {
                     id: w.id,
@@ -792,6 +803,7 @@
                 }
                 if (target) { focus(target.id); }
                 render();
+                if (data.tiling) setTiling(true);
                 return;
             }
         }
@@ -814,6 +826,54 @@
         });
     }
 
+    /* ---------------- Auto-tiling ---------------- */
+
+    // Arrange every visible window into a grid that fills the on-screen
+    // area (the current camera view, in world coordinates). Re-runs on
+    // camera moves/zooms, window open/close/minimize and viewport resizes.
+    function tileWindows() {
+        if (!C.tiling) return;
+        if (!C.viewport || !C.world) return;
+        var rect = C.viewport.getBoundingClientRect();
+        if (rect.width <= 0 || rect.height <= 0) return;
+        var scale = C.camera.scale || 1;
+        var vw = rect.width / scale;
+        var vh = rect.height / scale;
+        var ox = -C.camera.x / scale;
+        var oy = -C.camera.y / scale;
+
+        var list = [];
+        C.windows.forEach(function (w) {
+            if (!w.closed && !w.minimized) list.push(w);
+        });
+        if (list.length === 0) return;
+
+        var GAP = 6; // px between tiles (world space)
+        var cols = Math.ceil(Math.sqrt(list.length));
+        var rows = Math.ceil(list.length / cols);
+        var gw = (vw - (cols - 1) * GAP) / cols;
+        var gh = (vh - (rows - 1) * GAP) / rows;
+
+        list.forEach(function (w, i) {
+            var col = i % cols;
+            var row = Math.floor(i / cols);
+            w.x = Math.round(ox + col * (gw + GAP));
+            w.y = Math.round(oy + row * (gh + GAP));
+            w.w = Math.round(gw);
+            w.h = Math.round(gh);
+            applyPos(w);
+        });
+    }
+
+    function setTiling(on) {
+        C.tiling = !!on;
+        var btn = document.getElementById('tilingToggleBtn');
+        if (btn) btn.classList.toggle('on', C.tiling);
+        document.body.classList.toggle('drift-tiling-active', C.tiling);
+        if (C.tiling) tileWindows();
+        saveSoon();
+    }
+
     /* ---------------- Init ---------------- */
 
     function bindEvents() {
@@ -823,7 +883,7 @@
         C.viewport.addEventListener('wheel', onWheel, { passive: false });
         window.addEventListener('keydown', onKeyDown);
         window.addEventListener('keyup', onKeyUp);
-        window.addEventListener('resize', function () { updateGrid(); });
+        window.addEventListener('resize', function () { updateGrid(); if (C.tiling) tileWindows(); });
         window.addEventListener('beforeunload', saveState);
         window.addEventListener('blur', function () {
             if (C.drag) onDragEnd();
@@ -844,6 +904,13 @@
         buildDock();
         buildAddMenu();
         buildHint();
+
+        var tilingBtn = document.getElementById('tilingToggleBtn');
+        if (tilingBtn) {
+            tilingBtn.addEventListener('click', function () { setTiling(!C.tiling); });
+            setTiling(C.tiling);
+        }
+
         bindEvents();
         restoreState();
         updateDock();
@@ -882,6 +949,8 @@
         focusWindow: focusWindow,
         closeWindow: closeWindow,
         toggleMinimize: toggleMinimize,
+        setTiling: setTiling,
+        toggleTiling: function () { setTiling(!C.tiling); },
         resetView: resetView,
         zoomAt: zoomAt,
         getWindow: winById,
