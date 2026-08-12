@@ -156,6 +156,47 @@
     display: none;
 }
 
+/* ---------- Auto-tiling toggle switch (header) ---------- */
+.drift-tile-pill {
+    position: relative;
+    display: inline-block;
+    width: 26px;
+    height: 16px;
+    border-radius: 9999px;
+    background: rgba(107, 114, 128, 0.55);
+    border: 1px solid var(--border-color);
+    flex-shrink: 0;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+.drift-tile-knob {
+    position: absolute;
+    top: 1px;
+    left: 2px;
+    width: 12px;
+    height: 12px;
+    border-radius: 9999px;
+    background: #d1d5db;
+    transition: transform 0.18s ease, background 0.2s ease;
+}
+#tilingToggleBtn.on {
+    background: rgba(52, 211, 153, 0.16);
+    border-color: rgba(52, 211, 153, 0.4);
+    color: var(--accent-color);
+}
+#tilingToggleBtn.on .drift-tile-pill {
+    background: var(--accent-color);
+    border-color: rgba(52, 211, 153, 0.5);
+}
+#tilingToggleBtn.on .drift-tile-knob {
+    transform: translateX(10px);
+    background: #ffffff;
+}
+
+/* While auto-tiling is on, prevent free drag/resize of tiled windows. */
+.drift-tiling-active .drift-header { cursor: default; }
+.drift-tiling-active .drift-header:active { cursor: default; }
+.drift-tiling-active .drift-resize { cursor: default; }
+
 /* ---------- Moved module sources (become window content) ---------- */
 .win-inner {
     position: absolute !important;
