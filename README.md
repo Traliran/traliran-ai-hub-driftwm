@@ -66,5 +66,3 @@ This project is distributed under the **GNU Affero General Public License v3.0 (
 3. **Prohibition on Hidden Commercialization:** It is prohibited to close-source the code or hide built-in core features (including the store and author attribution) in public deployments.
 
 *To obtain a commercial license or a white-label partnership without AGPLv3 restrictions, please contact the repository owner via email at cwcom@proton.me.*
-
-Translated with DeepL.com (free version)
