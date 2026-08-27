@@ -44,6 +44,24 @@ Inside, you’ll find both built-in free tools (translator, code editor, idea ge
 * **🎨 Themes:** Support for multiple visual presets (Default Dark, Cyberpunk, Matrix).
 * **⚙️ Fine-Tuning Parameters:** Control generation “on the fly” using the Temperature, Top P, and Max Tokens sliders.
 * **📦 Import/Export:** Quickly save and load settings and profiles in JSON format.
+* **🧩 MCP (Model Context Protocol):** Connect remote MCP servers over Streamable HTTP and expose their tools to the AI as function-calling tools — just like an IDE agent. The model decides when to call a tool, the hub proxies the call, feeds the result back, and repeats. Works with any Streamable HTTP MCP endpoint; configure servers in the **🧩 MCP Servers** modal.
+
+---
+
+## 🧩 MCP (Model Context Protocol)
+
+MCP lets you plug external tools into the chat. The client (`mcp.js`) speaks JSON-RPC 2.0 over Streamable HTTP to any remote MCP server and turns its tools into OpenAI-style function tools used by the agentic loop.
+
+**Connect a server:** open **🧩 MCP Servers**, enter a name + URL (and an optional `Bearer` auth header), hit **Add & Connect**. Servers are saved in `LocalStorage` and auto-reconnect on startup. You can also add one from the console:
+
+```js
+const entry = MCP_MANAGER.add({ name: 'MyServer', url: 'https://host/mcp', authHeader: '' });
+await MCP_MANAGER.connectOne(entry.id);
+```
+
+**Write your own server:** implement a `POST` endpoint handling `initialize`, `notifications/initialized`, `tools/list`, and `tools/call`, return an `Mcp-Session-Id` header, and emit CORS.
+
+> Note: the agentic MCP mode runs only when a **single** model is selected (it is disabled in multi-model compare mode), and your server must allow CORS from the app's domain.
 
 ---
 
